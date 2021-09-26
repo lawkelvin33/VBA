@@ -1,0 +1,149 @@
+Sub lottery()
+
+Dim i As Integer 'outer for loop'
+Dim j As Integer 'inner for loop'
+Dim n As Long 'for loop of
+Dim nn As Integer  'for loop of lottery count'
+Dim win(7) As Integer 'winning numbers of lottery'
+Dim pick(6) As Integer 'pick numbers of lottery'
+Dim extra As Boolean 'boolean of extra number'
+Dim cnt As Integer 'count of matching numbers'
+Dim nnn As Long 'elongated for loop of lottery count'
+
+Dim show As Boolean 'option of showing pick numbers changing'
+Dim longer As Boolean 'option of duplicating nn'
+'user input of options'
+
+nn = Application.InputBox("구매할 로또 수를 입력하세요(1~32,767): ", Type:=1)
+longer = Application.InputBox("곱하시겠습니까?: ", Type:=4)
+If longer Then
+    nnn = nn * Application.InputBox("곱할 숫자 입력: ", Type:=1)
+Else
+    nnn = nn
+End If
+
+show = Application.InputBox("enable show?(1/0)", Type:=4)
+
+'interface'
+Cells(2, 1).Value = "win #"
+Cells(1, 8).Value = "bns #"
+Cells(3, 1).Value = "pick#"
+
+Cells(6, 1).Value = "cnt"
+For n = 2 To 6
+    Cells(6, n).Value = n - 1 & "등"
+Next
+Cells(6, 7).Value = "매출"
+Cells(6, 8).Value = "지출"
+Cells(6, 9).Value = "수익"
+For i = 1 To 9
+    Cells(7, i).Value = 0
+Next
+Range("A8").Value = "%"
+For i = 2 To 6
+    Cells(8, i).Value = 0
+Next
+
+
+'''''''''''<TODO> box for better visualization'''''''''''
+Range("A2:H3").Borders.LineStyle = 1
+Range("A6:I8").Borders.LineStyle = 1
+
+
+
+'creating winning numbers'
+win(0) = Int(Rnd * 44) + 1
+For i = 1 To 6
+Loop1:
+    win(i) = Int(Rnd * 44) + 1
+    For j = 0 To i - 1
+        If win(i) = win(j) Then
+            GoTo Loop1
+        End If
+    Next
+Next
+
+If show Then
+    For i = 0 To 6
+        Cells(2, i + 2).Value = win(i)
+    Next
+End If
+
+
+For n = 1 To nnn
+
+    Cells(7, 1).Value = Cells(7, 1).Value + 1
+    Cells(7, 8).Value = Cells(7, 8).Value + 1
+    'creating pick numbers'
+        pick(0) = Int(Rnd * 44) + 1
+        For i = 1 To 5
+Loop2:
+            pick(i) = Int(Rnd * 44) + 1
+            For j = 0 To i - 1
+                If pick(i) = pick(j) Then
+                    GoTo Loop2
+                End If
+            Next
+        Next
+        
+    If show Then
+        For i = 0 To 5
+            Cells(3, i + 2).Value = pick(i)
+        Next
+    End If
+    
+    'matching pick numbers with winning numbers'
+    cnt = 0
+    For i = 0 To 5
+        For j = 0 To 5
+            If win(i) = pick(j) Then
+                cnt = cnt + 1
+                GoTo Loop3
+            End If
+        Next
+Loop3:
+    Next
+    'updating count board'
+    If cnt < 3 Then
+        GoTo Loop4
+    ElseIf cnt = 3 Then
+        Cells(7, 6).Value = Cells(7, 6).Value + 1
+        Cells(7, 7).Value = Cells(7, 7).Value + 5
+        Cells(8, 6).Value = (Cells(7, 6).Value * 100) / Cells(7, 1).Value
+    ElseIf cnt = 4 Then
+        Cells(7, 5).Value = Cells(7, 5).Value + 1
+        Cells(7, 7).Value = Cells(7, 7).Value + 50
+        Cells(8, 5).Value = (Cells(7, 5).Value * 100) / Cells(7, 1).Value
+    ElseIf cnt = 5 Then
+        extra = False
+        For i = 0 To 5
+            If pick(i) = win(6) Then
+                extra = True
+            End If
+        Next
+        If extra Then
+            Cells(7, 3).Value = Cells(7, 3).Value + 1
+            Cells(7, 7).Value = Cells(7, 7).Value + 60000
+            Cells(8, 3).Value = (Cells(7, 3).Value * 100) / Cells(7, 1).Value
+        Else
+            Cells(7, 4).Value = Cells(7, 4).Value + 1
+            Cells(7, 7).Value = Cells(7, 7).Value + 1500
+            Cells(8, 4).Value = (Cells(7, 4).Value * 100) / Cells(7, 1).Value
+        End If
+    Else
+        Cells(7, 2).Value = Cells(7, 2).Value + 1
+        Cells(7, 7).Value = Cells(7, 7).Value + 2000000
+        Cells(8, 2).Value = (Cells(7, 2).Value * 100) / Cells(7, 1).Value
+    End If
+Loop4:
+
+Cells(7, 9).Value = Cells(7, 7).Value - Cells(7, 8).Value
+
+Next
+            
+
+
+
+
+End Sub
+
