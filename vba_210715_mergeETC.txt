@@ -1,0 +1,71 @@
+Sub 병합()
+
+Dim sCel As Range
+
+Set sCel = Application.InputBox("input starting cell: ", Type:=8)
+If sCel Is Nothing Then Exit Sub
+
+sCel.Select
+Application.DisplayAlerts = False
+
+Do While ActiveCell.Value <> ""
+    If sCel.Value = ActiveCell.Offset(1, 0).Value Then
+        ActiveCell.Offset(1, 0).Select
+    Else
+        Range(sCel, ActiveCell).MergeCells = True
+        Set sCel = ActiveCell.Offset(1, 0)
+        ActiveCell.Offset(1, 0).Select
+    End If
+Loop
+
+
+End Sub
+
+Sub 병합해제()
+Dim sCell As Range
+Dim val As Integer
+Dim endAddr As Integer
+Set sCell = Application.InputBox("해제를 시작할 셀을 입력:", Type:=8)
+
+sCell.Select
+Application.DisplayAlerts = False
+
+Do While sCell <> ""
+    If ActiveCell.Row + 1 = ActiveCell.Offset(1, 0).Row Then
+        ActiveCell.Offset(1, 0).Select
+        Set sCell = ActiveCell
+    Else
+        endAddr = ActiveCell.Offset(1, 0).Row
+        val = sCell.Value
+        sCell.MergeCells = False
+        ActiveCell.Offset(1, 0).Select
+        Do While ActiveCell.Row < endAddr
+            ActiveCell.Value = val
+            ActiveCell.Offset(1, 0).Select
+        Loop
+        Set sCell = ActiveCell
+    End If
+Loop
+End Sub
+
+Sub clearAll()
+Range("A1:K33").Clear
+End Sub
+
+
+
+Sub 등급구하기()
+' 요구사항
+' 1. extract integer from text
+' 2. 각 종목을 합산한 결과를 식을 통해서 점수 계산
+' 3. 버튼 하나만 가지고 작동.
+
+
+
+End Sub
+
+
+
+
+
+
